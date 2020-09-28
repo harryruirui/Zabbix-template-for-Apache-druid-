@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-09-28T07:36:55Z</date>
+    <groups>
+        <group>
+            <name>Templates/Bigdata</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Druid broker</template>
+            <name>Template Druid broker</name>
+            <groups>
+                <group>
+                    <name>Templates/Bigdata</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Druid Broker</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Druid Broker Datasources Can be query</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.broker.datasources</key>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <url>http://{$USERNAME}:{$PASSWORD}@{HOST.IP}:{$BROKER_PORT}/druid/v2/datasources</url>
+                </item>
+                <item>
+                    <name>Druid Broker Health</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.broker.health</key>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>Druid Broker</name>
+                        </application>
+                    </applications>
+                    <url>http://{$USERNAME}:{$PASSWORD}@{HOST.IP}:{$BROKER_PORT}/status/health</url>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;&gt;&quot;true&quot;</expression>
+                            <name>Druid broker has become unhealthy</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Druid Broker LoadStatus</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.broker.loadstatus</key>
+                    <delay>3m</delay>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>Druid Broker</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.inventoryInitialized</params>
+                        </step>
+                    </preprocessing>
+                    <url>http://{$USERNAME}:{$PASSWORD}@{HOST.IP}:{$BROKER_PORT}/druid/broker/v1/loadstatus</url>
+                </item>
+                <item>
+                    <name>Port {$BROKER_PORT} of Broker is Listening</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>net.tcp.listen[{$BROKER_PORT}]</key>
+                    <applications>
+                        <application>
+                            <name>Druid Broker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of Druid broker processes</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>proc.num[,,,&quot;org.apache.druid.cli.Main server broker&quot;]</key>
+                    <applications>
+                        <application>
+                            <name>Druid Broker</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Process of Druid broker is Dead</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$BROKER_PORT}</macro>
+                    <value>18082</value>
+                </macro>
+                <macro>
+                    <macro>{$PASSWORD}</macro>
+                    <type>SECRET_TEXT</type>
+                </macro>
+                <macro>
+                    <macro>{$USERNAME}</macro>
+                    <value>druid_system</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>

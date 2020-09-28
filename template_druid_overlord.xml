@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-09-28T07:38:07Z</date>
+    <groups>
+        <group>
+            <name>Templates/Bigdata</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Druid overlord</template>
+            <name>Template Druid overlord</name>
+            <groups>
+                <group>
+                    <name>Templates/Bigdata</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <name>Druid Overlord isLeader</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.overlord.isLeader</key>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <url>http://{$USERNAME}:{$PASSWORD}@{HOST.IP}:{$OVERLORD_PORT}/druid/indexer/v1/isLeader</url>
+                </item>
+                <item>
+                    <name>Port {$OVERLORD_PORT} of Broker is Listening</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>net.tcp.listen[{$OVERLORD_PORT}]</key>
+                </item>
+                <item>
+                    <name>Number of Druid overlord  processes</name>
+                    <key>proc.num[,,,&quot;org.apache.druid.cli.Main server overlord&quot;]</key>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Process of Druid overlord is Dead</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$OVERLORD_PORT}</macro>
+                    <value>18090</value>
+                </macro>
+                <macro>
+                    <macro>{$PASSWORD}</macro>
+                    <type>SECRET_TEXT</type>
+                </macro>
+                <macro>
+                    <macro>{$USERNAME}</macro>
+                    <value>druid_system</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>

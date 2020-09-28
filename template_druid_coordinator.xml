@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-09-28T07:37:27Z</date>
+    <groups>
+        <group>
+            <name>Templates/Bigdata</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Druid coordinator</template>
+            <name>Template Druid coordinator</name>
+            <groups>
+                <group>
+                    <name>Templates/Bigdata</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Druid Coordinator</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Druid Coordinatior datasources</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.coordinator.datasources</key>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>Druid Coordinator</name>
+                        </application>
+                    </applications>
+                    <url>http://{$USERNAME}:{PASSWORD}@{HOST.IP}:{$COORDINATOR_PORT}/druid/coordinator/v1/datasources</url>
+                </item>
+                <item>
+                    <name>Druid Coordinatior isLeader</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.coordinator.isleader</key>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>Druid Coordinator</name>
+                        </application>
+                    </applications>
+                    <url>http://{$USERNAME}:{PASSWORD}@{HOST.IP}:{$COORDINATOR_PORT}/druid/coordinator/v1/isLeader</url>
+                </item>
+                <item>
+                    <name>Port {$COORDINATOR_PORT} of Broker is Listening</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>net.tcp.listen[{$COORDINATOR_PORT}]</key>
+                </item>
+                <item>
+                    <name>Number of Druid coordinator processes</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>proc.num[,,,&quot;org.apache.druid.cli.Main server coordinator&quot;]</key>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Process of Druid coordinator is Dead</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$COORDINATOR_PORT}</macro>
+                    <value>18081</value>
+                </macro>
+                <macro>
+                    <macro>{$PASSWORD}</macro>
+                    <value>Afj1J8H405</value>
+                </macro>
+                <macro>
+                    <macro>{$USERNAME}</macro>
+                    <value>druid_system</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-09-28T07:37:55Z</date>
+    <groups>
+        <group>
+            <name>Templates/Bigdata</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Druid middleManager</template>
+            <name>Template Druid middleManager</name>
+            <groups>
+                <group>
+                    <name>Templates/Bigdata</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <name>Port 18091 of Broker is Listening</name>
+                    <key>net.tcp.listen[18091]</key>
+                </item>
+                <item>
+                    <name>Number of Druid middleManager</name>
+                    <key>proc.num[,,,&quot;org.apache.druid.cli.Main server middleManager&quot;]</key>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Process of Druid middleManager is Dead</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+        </template>
+    </templates>
+</zabbix_export>

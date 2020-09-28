@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-09-28T07:37:42Z</date>
+    <groups>
+        <group>
+            <name>Templates/Bigdata</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Druid historical</template>
+            <name>Template Druid historical</name>
+            <groups>
+                <group>
+                    <name>Templates/Bigdata</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Druid Historical</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Druid Historical loadstatus</name>
+                    <type>HTTP_AGENT</type>
+                    <key>druid.historical.loadstatus</key>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>historical节点将segment是否已经加载到内存中，一般反应出historical节点刚刚重启&#13;
+建议trigger级别：INFO</description>
+                    <applications>
+                        <application>
+                            <name>Druid Historical</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.cacheInitialized</params>
+                        </step>
+                    </preprocessing>
+                    <url>http://{$USERNAME}:{$PASSWORD}@{HOST.IP}:{$HISTORICAL_PORT}/druid/historical/v1/loadstatus</url>
+                </item>
+                <item>
+                    <name>Port {$HISTORICAL_PORT} of Broker is Listening</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>net.tcp.listen[{$HISTORICAL_PORT}]</key>
+                </item>
+                <item>
+                    <name>Number of Druid historical processes</name>
+                    <type>ZABBIX_ACTIVE</type>
+                    <key>proc.num[,,,&quot;org.apache.druid.cli.Main server historical&quot;]</key>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Process of Druid historical is Dead</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$HISTORICAL_PORT}</macro>
+                    <value>18083</value>
+                </macro>
+                <macro>
+                    <macro>{$PASSWORD}</macro>
+                    <type>SECRET_TEXT</type>
+                </macro>
+                <macro>
+                    <macro>{$USERNAME}</macro>
+                    <value>druid_system</value>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
