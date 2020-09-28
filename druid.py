@@ -10,7 +10,7 @@ from requests.auth import HTTPBasicAuth
 
 overlord = 'http://overloadleaderIP:18090'
 coordinator = 'http://coordinatorleaderIP:18081'
-user = 'druid_system'
+user = 'xiaodongxi'
 password = 'abcdefg'
 
 status_api = '/status'
