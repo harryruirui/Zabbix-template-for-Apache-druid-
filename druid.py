@@ -8,10 +8,10 @@ import time
 import requests
 from requests.auth import HTTPBasicAuth
 
-overlord = 'http://10.18.14.222:18090'
-coordinator = 'http://10.18.14.221:18081'
+overlord = 'http://overloadleaderIP:18090'
+coordinator = 'http://coordinatorleaderIP:18081'
 user = 'druid_system'
-password = 'Afj1J8H405'
+password = 'abcdefg'
 
 status_api = '/status'
 running_api = '/druid/indexer/v1/runningTasks'
